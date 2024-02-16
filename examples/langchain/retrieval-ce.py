@@ -6,8 +6,14 @@ from relari import RelariClient, Tag
 from langchain_community.document_loaders import DirectoryLoader
 from langchain.text_splitter import CharacterTextSplitter
 from tqdm import tqdm
+import json
 
-client = RelariClient()
+from continuous_eval.metrics import RougeChunkMatch
+from continuous_eval.evaluators import RetrievalEvaluator
+from continuous_eval.metrics import PrecisionRecallF1, RankedRetrievalMetrics
+from continuous_eval import Dataset
+
+
 
 source_files = Path(
     # "../dataset-curator/hosted_data/mini-squad-qa/source_files/"
@@ -15,7 +21,7 @@ source_files = Path(
 )
 chroma_db_folder = Path("data/fin_bench")
 
-search_params = {"k": 5, "chunk_size": 500}
+search_params = {"k": 5, "chunk_size": 100}
 
 # Initialize Chroma DB
 # print("Loading documents")
@@ -40,31 +46,24 @@ db = Chroma(
 # Setup RAG pipeline
 retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": search_params["k"]})
 
-client.set_experiment("Retrieval Experiment")
-client.set_dataset("finance_bench")
-client.set_metrics(
-    {
-        "retrieval": [
-            {
-                "class": "PrecisionRecallF1",
-                "params": {
-                    "matching_strategy": {"class": "RougeChunkMatch"},
-                },
-            },
-            {
-                "class": "RankedRetrievalMetrics",
-                "params": {
-                    "matching_strategy": {"class": "RougeChunkMatch"},
-                },
-            },
-        ],
-    }
-)
-client.start(run_name=None, params=search_params)
+dataset_file = Path("/Users/antonap/relari/mlflow-integration/core/data/finance_bench/dataset.jsonl")
+dataset = []
+with open(dataset_file, "r") as f:
+    for line in f:
+        dataset.append(json.loads(line))
 
-for item in tqdm(client.iterate_dataset(), total=client.dataset_size):
-    q = item["question"]
+for i in tqdm(range(len(dataset))):
+    q = dataset[i]["question"]
     retrieved_docs = [doc.page_content for doc in retriever.invoke(q)]
-    client.log(Tag.RETRIEVED_CONTEXTS, retrieved_docs) 
+    dataset[i]["retrieved_contexts"] = retrieved_docs
 
-client.stop()
+# Setup the evaluator
+evaluator = RetrievalEvaluator(
+    dataset=Dataset(dataset),
+    metrics=[
+        PrecisionRecallF1(RougeChunkMatch()),
+        # RankedRetrievalMetrics(RougeChunkMatch()),
+    ],
+)
+evaluator.run(batch_size=1)
+print(evaluator.aggregated_results)
