@@ -20,6 +20,12 @@ class Pipeline:
     def modules(self):
         return self._modules
 
+    def module_by_name(self, name: str) -> Module:
+        for module in self._modules:
+            if module.name == name:
+                return module
+        raise ValueError(f"Module {name} not found")
+
     def _validate_modules(self):
         names = set()
         for module in self._modules:

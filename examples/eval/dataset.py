@@ -1,4 +1,4 @@
-import typing 
+import typing
 from pathlib import Path
 import yaml
 import json
@@ -10,26 +10,27 @@ UUID = str
 _SAFE_DICT = {k: v for k, v in typing.__dict__.items() if not k.startswith("__")}
 _SAFE_DICT["UUID"] = UUID
 
+
 @dataclass(frozen=True)
 class DatasetField:
     name: str
     type: type
     description: str
 
+
 class Dataset:
-    def __init__(self, dataset_name:str) -> None:
+    def __init__(self, dataset_name: str) -> None:
         base_path = Path("dataset")
         dataset_path = base_path / dataset_name
         assert dataset_path.exists(), f"Dataset {dataset_name} does not exist"
         # Load manifest
-        with open(dataset_path/"manifest.yaml", "r") as manifest_file:
+        with open(dataset_path / "manifest.yaml", "r") as manifest_file:
             self._manifest = yaml.safe_load(manifest_file)
         # load jsonl dataset
-        with open(dataset_path/"dataset.jsonl", "r") as json_file:
-            self._data = list(json_file)
+        with open(dataset_path / "dataset.jsonl", "r") as json_file:
+            self._data =    [json.loads(x) for x in json_file.readlines()]
         # create dynamic properties
         self._create_dynamic_properties()
-
 
     def _create_dynamic_properties(self):
         # Dynamically add a property for each field
@@ -37,13 +38,16 @@ class Dataset:
             try:
                 _field = DatasetField(
                     name=field_name,
-                    type=eval(field_info['type'],_SAFE_DICT),
-                    description=field_info['description'])
+                    type=eval(field_info["type"], _SAFE_DICT),
+                    description=field_info["description"],
+                )
                 setattr(self, field_name, _field)
             except:
                 raise ValueError(f"Field type {field_info['type']} not supported")
 
-    def filed_types(self, name:str) -> type:
+    def filed_types(self, name: str) -> type:
         return getattr(self, name).type
-    # def __getitem__(self, key: DatasetKey) -> DatasetValue:
-    #     return None
+
+    @property
+    def data(self):
+        return self._data

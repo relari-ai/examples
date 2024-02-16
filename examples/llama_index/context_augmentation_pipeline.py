@@ -29,12 +29,12 @@ agent = AgentModule(
     tools=tools,
 )
 
-dummy = Module(
-    name="dummy",
+output = Module(
+    name="answer",
     input=agent,
     output=str,
     expected_output=dataset.answer,
 )
 
-pipline = Pipeline([agent, dummy], dataset=dataset)
-pipline.print_graph()
+pipeline = Pipeline([agent, output], dataset=dataset)
+
