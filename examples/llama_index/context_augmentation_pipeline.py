@@ -1,4 +1,5 @@
 from examples.eval import Module, AgentModule, Pipeline, Tool, Dataset
+from examples.eval.metrics import Correctness, ToolCallCorrectness
 
 dataset = Dataset("uber")
 
@@ -27,6 +28,7 @@ agent = AgentModule(
     expected_output=dataset.answer,
     expected_tool_calls=dataset.tool_calls,
     tools=tools,
+    eval=[Correctness(), ToolCallCorrectness()],
 )
 
 output = Module(
@@ -34,6 +36,7 @@ output = Module(
     input=agent,
     output=str,
     expected_output=dataset.answer,
+    eval=[Correctness()],
 )
 
 pipeline = Pipeline([agent, output], dataset=dataset)
