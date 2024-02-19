@@ -16,7 +16,7 @@ eval_manager.set_pipeline(pipeline)
 
 # Setup Chroma
 db = Chroma(
-    persist_directory=str("/Users/yisz/Downloads/208_219_chroma_db"),
+    persist_directory=str("../continuous-eval/data/graham_essays/small/chromadb"),
     embedding_function=OpenAIEmbeddings(),
 )
 
@@ -72,4 +72,4 @@ if __name__ == "__main__":
         print(f"Q: {q}\nA: {response}\n")
         eval_manager.next_sample()
 
-    eval_manager.save_results(Path("results.jsonl"))
+    eval_manager.evaluation.save(Path("results.jsonl"))

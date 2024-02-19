@@ -25,7 +25,7 @@ from continuous_eval.metrics.generation.text import (
 from typing import List, Dict
 from continuous_eval.eval.tests import GreaterOrEqualThan
 
-dataset = Dataset("/Users/yisz/Downloads/PG dataset")
+dataset = Dataset("../mlflow-integration/core/data/paul-graham")
 
 Documents = List[Dict[str, str]]
 DocumentsContent = ModuleOutput(lambda x: [z["page_content"] for z in x])
