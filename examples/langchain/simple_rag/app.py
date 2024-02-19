@@ -6,14 +6,17 @@ from langchain.retrievers.document_compressors import CohereRerank
 from langchain_community.vectorstores import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import OpenAIEmbeddings
-
+from dotenv import load_dotenv
 from examples.langchain.simple_rag.pipeline import pipeline
+
+load_dotenv()
 
 eval_manager.set_pipeline(pipeline)
 
+
 # Setup Chroma
 db = Chroma(
-    persist_directory=str("data/graham_essays/small/chromadb"),
+    persist_directory=str("/Users/yisz/Downloads/208_219_chroma_db"),
     embedding_function=OpenAIEmbeddings(),
 )
 
