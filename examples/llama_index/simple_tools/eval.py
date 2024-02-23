@@ -1,20 +1,20 @@
 from pathlib import Path
 
 from continuous_eval.eval.manager import eval_manager
-from examples.langchain.simple_rag.pipeline import pipeline
+from examples.llama_index.simple_tools.pipeline import pipeline
 
 if __name__ == "__main__":
     eval_manager.set_pipeline(pipeline)
 
     # Evaluation
-    # eval_manager.evaluation.load(Path("results.jsonl"))
-    # eval_manager.run_metrics()
-    # eval_manager.metrics.save(Path("metrics_results.json"))
+    eval_manager.evaluation.load(Path("results.jsonl"))
+    eval_manager.run_metrics()
+    eval_manager.metrics.save(Path("metrics_results.json"))
 
     # Tests
-    eval_manager.metrics.load(Path("metrics_results.json"))
-    agg = eval_manager.metrics.aggregate()
-    print(agg)
+    # eval_manager.metrics.load(Path("metrics_results.json"))
+    # agg = eval_manager.metrics.aggregate()
+    # print(agg)
     # eval_manager.run_tests()
     # eval_manager.tests.save(Path("test_results.json"))
 
