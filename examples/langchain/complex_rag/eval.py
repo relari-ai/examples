@@ -11,12 +11,13 @@ if __name__ == "__main__":
     # eval_manager.run_eval()
     # eval_manager.save_eval_results(Path("eval_results.json"))
 
-    # Tests
-    eval_manager.load_eval_results(Path("eval_results.json"))
-    eval_manager.run_tests()
-    eval_manager.save_test_results(Path("test_results.json"))
+    # # Tests
+    # eval_manager.load_eval_results(Path("eval_results.json"))
+    # eval_manager.run_tests()
+    # eval_manager.save_test_results(Path("test_results.json"))
 
-    # eval_manager.load_test_results(Path("test_results.json"))
+    eval_manager.load_test_results(Path("test_results.json"))
+    print(eval_manager.test_graph())
     for test in eval_manager.test_results:
         print(f"{test}: {eval_manager.test_results[test]}")
     print("Done")
