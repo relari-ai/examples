@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "examples"
+name = "continuous-eval-examples"
 version = "0.1.0"
 description = ""
 authors = ["Pasquale Antonante <p.antonante@gmail.com>"]

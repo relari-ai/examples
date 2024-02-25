@@ -8,7 +8,7 @@ from continuous_eval.metrics.generation.text import (
 from typing import List, Dict
 from continuous_eval.eval.tests import MeanGreaterOrEqualThan
 
-dataset = Dataset("data/eval_golden_dataset")
+dataset = Dataset("examples/langchain/rag_data/eval_golden_dataset")
 
 Documents = List[Dict[str, str]]
 DocumentsContent = ModuleOutput(lambda x: [z["page_content"] for z in x])

@@ -17,14 +17,14 @@ load_dotenv()
 eval_manager.set_pipeline(pipeline)
 
 # Load documents and split
-loader = DirectoryLoader("data/documents/208_219_graham_essays")
+loader = DirectoryLoader("examples/langchain/rag_data/documents/208_219_graham_essays")
 docs = loader.load()
 TextSplitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
 split_docs = TextSplitter.split_documents(docs)
 
-# Set up Ve
+# Set up Vectorstore
 db = Chroma(
-    persist_directory=str("data/vectorstore/208_219_chroma_db"),
+    persist_directory=str("examples/langchain/rag_data/vectorstore/208_219_chroma_db"),
     embedding_function=OpenAIEmbeddings(),
 )
 
@@ -34,14 +34,14 @@ model = ChatGoogleGenerativeAI(model="gemini-pro")
 def base_retrieve(q):
     # Basic retriever
     basic_retriever = db.as_retriever(
-        search_type="similarity", search_kwargs={"k": 8}
+        search_type="similarity", search_kwargs={"k": 4}
     )
     return basic_retriever.invoke(q)
 
 def bm25_retrieve(q):
     # bm25 retriever
     bm25_retriever = BM25Retriever.from_documents(documents=docs)
-    bm25_retriever.k = 10
+    bm25_retriever.k = 2
     return bm25_retriever.invoke(q)
 
 def hyde_generator(q):
@@ -60,7 +60,7 @@ def hyde_generator(q):
 def hyde_retrieve(hypothetical_doc):
     # HyDE retriever
     hyde_retriever = db.as_retriever(
-        search_type="similarity", search_kwargs={"k": 4}
+        search_type="similarity", search_kwargs={"k": 3}
     )
     return hyde_retriever.invoke(hypothetical_doc)
 

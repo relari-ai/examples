@@ -47,12 +47,9 @@ llm = AgentModule(
         ),
     ],
     tests=[
-        # GreaterOrEqualThan(
-        #     test_name="Readability", metric_name="flesch_reading_ease", min_value=20.0
-        # ),
-        # GreaterOrEqualThan(
-        #     test_name="Answer Correctness", metric_name="rouge_l_f1", min_value=0.8
-        # ),
+        GreaterOrEqualThan(
+            test_name="Answer Correctness", metric_name="rouge_l_recall", min_value=0.8
+        ),
     ],
 )
 

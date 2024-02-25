@@ -25,7 +25,7 @@ from continuous_eval.metrics.generation.text import (
 from typing import List, Dict
 from continuous_eval.eval.tests import GreaterOrEqualThan, MeanGreaterOrEqualThan
 
-dataset = Dataset("data/eval_golden_dataset")
+dataset = Dataset("examples/langchain/rag_data/eval_golden_dataset")
 
 Documents = List[Dict[str, str]]
 DocumentsContent = ModuleOutput(lambda x: [z["page_content"] for z in x])
@@ -141,23 +141,23 @@ llm = Module(
         DebertaAnswerScores().use(
             answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
         ),
-        LLMBasedFaithfulness().use(
-            answer=ModuleOutput(),
-            retrieved_context=ModuleOutput(DocumentsContent, module=reranker),
-            question=dataset.question,
-        ),
-        LLMBasedAnswerCorrectness().use(
-            question=dataset.question,
-            answer=ModuleOutput(),
-            ground_truth_answers=dataset.ground_truths,
-        ),
-        LLMBasedAnswerRelevance().use(
-            question=dataset.question,
-            answer=ModuleOutput(),
-        ),
-        LLMBasedStyleConsistency().use(
-            answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
-        ),
+        # LLMBasedFaithfulness().use(
+        #     answer=ModuleOutput(),
+        #     retrieved_context=ModuleOutput(DocumentsContent, module=reranker),
+        #     question=dataset.question,
+        # ),
+        # LLMBasedAnswerCorrectness().use(
+        #     question=dataset.question,
+        #     answer=ModuleOutput(),
+        #     ground_truth_answers=dataset.ground_truths,
+        # ),
+        # LLMBasedAnswerRelevance().use(
+        #     question=dataset.question,
+        #     answer=ModuleOutput(),
+        # ),
+        # LLMBasedStyleConsistency().use(
+        #     answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
+        # ),
     ],
     tests=[
         GreaterOrEqualThan(

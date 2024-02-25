@@ -9,11 +9,12 @@ from continuous_eval.eval.manager import eval_manager
 from examples.langchain.simple_rag.pipeline import pipeline
 load_dotenv()
 
+db = Chroma(
+    persist_directory=str("examples/langchain/rag_data/vectorstore/208_219_chroma_db"),
+    embedding_function=OpenAIEmbeddings(),
+)
+
 def retrieve(q):
-    db = Chroma(
-        persist_directory=str("/data/vectorstore/208_219_chroma_db"),
-        embedding_function=OpenAIEmbeddings(),
-    )
     retriever = db.as_retriever(
         search_type="similarity", search_kwargs={"k": 10}
     )
