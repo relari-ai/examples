@@ -7,7 +7,7 @@ from continuous_eval.eval import (
     CalledTools,
 )
 from continuous_eval.metrics.generation.text import DeterministicAnswerCorrectness
-from continuous_eval.metrics.tools.match import ToolDeterministicMatch
+from continuous_eval.metrics.tools.match import ToolSelectionAccuracy
 from continuous_eval.eval.tests import GreaterOrEqualThan
 
 dataset = Dataset("examples/llama_index/simple_tools/data")
@@ -42,7 +42,7 @@ llm = AgentModule(
         DeterministicAnswerCorrectness().use(
             answer=ModuleOutput(), ground_truth_answers=dataset.answers
         ),
-        ToolDeterministicMatch().use(
+        ToolSelectionAccuracy().use(
             tools=CalledTools(), ground_truths=dataset.tools
         ),
     ],

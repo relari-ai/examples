@@ -11,7 +11,7 @@ load_dotenv()
 
 def retrieve(q):
     db = Chroma(
-        persist_directory=str("/Users/yisz/Downloads/208_219_chroma_db"),
+        persist_directory=str("/data/vectorstore/208_219_chroma_db"),
         embedding_function=OpenAIEmbeddings(),
     )
     retriever = db.as_retriever(
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         reranked_docs = rerank(q, retrieved_docs)
         eval_manager.log("reranker", [doc.__dict__ for doc in reranked_docs])
         # Run and log Generator results
-        response = ask(q, retrieved_docs)
+        response = ask(q, reranked_docs)
         eval_manager.log("llm", response)
         print(f"Q: {q}\nA: {response}\n")
         eval_manager.next_sample()

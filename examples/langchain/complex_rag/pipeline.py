@@ -23,7 +23,7 @@ from continuous_eval.metrics.generation.text import (
     LLMBasedStyleConsistency,
 )
 from typing import List, Dict
-from continuous_eval.eval.tests import GreaterOrEqualThan
+from continuous_eval.eval.tests import GreaterOrEqualThan, MeanGreaterOrEqualThan
 
 dataset = Dataset("data/eval_golden_dataset")
 
@@ -37,20 +37,12 @@ base_retriever = Module(
     eval=[
         PrecisionRecallF1().use(
             retrieved_context=DocumentsContent,
-            ground_truth_context=dataset.ground_truth_contexts,
+            ground_truth_context=dataset.ground_truth_context,
         ),
         RankedRetrievalMetrics().use(
             retrieved_context=DocumentsContent,
-            ground_truth_context=dataset.ground_truth_contexts,
+            ground_truth_context=dataset.ground_truth_context,
         ),
-        # LLMBasedContextPrecision().use(
-        #     retrieved_context=DocumentsContent, question=dataset.question, 
-        # ),
-        # LLMBasedContextCoverage().use(
-        #     question=dataset.question,
-        #     retrieved_contexts=DocumentsContent,
-        #     ground_truth_answers=dataset.ground_truths,
-        # ),
     ],
     tests=[
         GreaterOrEqualThan(
@@ -66,20 +58,12 @@ bm25_retriever = Module(
     eval=[
         PrecisionRecallF1().use(
             retrieved_context=DocumentsContent,
-            ground_truth_context=dataset.ground_truth_contexts,
+            ground_truth_context=dataset.ground_truth_context,
         ),
         RankedRetrievalMetrics().use(
             retrieved_context=DocumentsContent,
-            ground_truth_context=dataset.ground_truth_contexts,
+            ground_truth_context=dataset.ground_truth_context,
         ),
-        # LLMBasedContextPrecision().use(
-        #     retrieved_context=DocumentsContent, question=dataset.question, 
-        # ),
-        # LLMBasedContextCoverage().use(
-        #     question=dataset.question,
-        #     retrieved_contexts=DocumentsContent,
-        #     ground_truth_answers=dataset.ground_truths,
-        # ),
     ],
     tests=[
         GreaterOrEqualThan(
@@ -101,23 +85,15 @@ hyde_retriever = Module(
     eval=[
         PrecisionRecallF1().use(
             retrieved_context=DocumentsContent,
-            ground_truth_context=dataset.ground_truth_contexts,
+            ground_truth_context=dataset.ground_truth_context,
         ),
         RankedRetrievalMetrics().use(
             retrieved_context=DocumentsContent,
-            ground_truth_context=dataset.ground_truth_contexts,
+            ground_truth_context=dataset.ground_truth_context,
         ),
-        # LLMBasedContextPrecision().use(
-        #     retrieved_context=DocumentsContent, question=dataset.question, 
-        # ),
-        # LLMBasedContextCoverage().use(
-        #     question=dataset.question,
-        #     retrieved_contexts=DocumentsContent,
-        #     ground_truth_answers=dataset.ground_truths,
-        # ),
     ],
     tests=[
-        GreaterOrEqualThan(
+        MeanGreaterOrEqualThan(
             test_name="Context Recall", metric_name="context_recall", min_value=0.9
         ),
     ],
@@ -131,15 +107,15 @@ reranker = Module(
     eval=[
         PrecisionRecallF1().use(
             retrieved_context=DocumentsContent,
-            ground_truth_context=dataset.ground_truth_contexts,
+            ground_truth_context=dataset.ground_truth_context,
         ),
         RankedRetrievalMetrics().use(
             retrieved_context=DocumentsContent,
-            ground_truth_context=dataset.ground_truth_contexts,
+            ground_truth_context=dataset.ground_truth_context,
         ),
     ],
     tests=[
-        GreaterOrEqualThan(
+        MeanGreaterOrEqualThan(
             test_name="Context Recall", metric_name="context_recall", min_value=0.9
         ),
     ],
@@ -156,32 +132,32 @@ llm = Module(
         ),
         DeterministicFaithfulness().use(
             answer=ModuleOutput(),
-            retrieved_contexts=ModuleOutput(DocumentsContent, module=reranker),
+            retrieved_context=ModuleOutput(DocumentsContent, module=reranker),
         ),
-        # BertAnswerRelevance().use(answer=ModuleOutput(), question=dataset.question),
-        # BertAnswerSimilarity().use(
-        #     answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
-        # ),
-        # DebertaAnswerScores().use(
-        #     answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
-        # ),
-        # LLMBasedFaithfulness().use(
-        #     answer=ModuleOutput(),
-        #     retrieved_context=ModuleOutput(DocumentsContent, module=reranker),
-        #     question=dataset.question,
-        # ),
-        # LLMBasedAnswerCorrectness().use(
-        #     question=dataset.question,
-        #     answer=ModuleOutput(),
-        #     ground_truth_answers=dataset.ground_truths,
-        # ),
-        # LLMBasedAnswerRelevance().use(
-        #     question=dataset.question,
-        #     answer=ModuleOutput(),
-        # ),
-        # LLMBasedStyleConsistency().use(
-        #     answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
-        # ),
+        BertAnswerRelevance().use(answer=ModuleOutput(), question=dataset.question),
+        BertAnswerSimilarity().use(
+            answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
+        ),
+        DebertaAnswerScores().use(
+            answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
+        ),
+        LLMBasedFaithfulness().use(
+            answer=ModuleOutput(),
+            retrieved_context=ModuleOutput(DocumentsContent, module=reranker),
+            question=dataset.question,
+        ),
+        LLMBasedAnswerCorrectness().use(
+            question=dataset.question,
+            answer=ModuleOutput(),
+            ground_truth_answers=dataset.ground_truths,
+        ),
+        LLMBasedAnswerRelevance().use(
+            question=dataset.question,
+            answer=ModuleOutput(),
+        ),
+        LLMBasedStyleConsistency().use(
+            answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
+        ),
     ],
     tests=[
         GreaterOrEqualThan(

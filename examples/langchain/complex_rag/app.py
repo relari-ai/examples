@@ -117,4 +117,4 @@ if __name__ == "__main__":
         print(f"Q: {q}\nA: {response}\n")
         eval_manager.next_sample()
 
-    eval_manager.save_results(Path("results.jsonl"))
+    eval_manager.evaluation.save(Path("results.jsonl"))
