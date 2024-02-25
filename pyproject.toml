@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "continuous-eval-examples"
+name = "examples"
 version = "0.1.0"
 description = ""
 authors = ["Pasquale Antonante <p.antonante@gmail.com>"]
@@ -15,8 +15,7 @@ langchain = "^0.1.5"
 
 chromadb = "^0.4.22"
 
-relari= {path = "../cli/", develop = true}
-continuous-eval = {path = "../continuous-eval", develop = true}
+continuous-eval = "0.3.0"
 
 unstructured = {extras = ["pdf"], version = "^0.12.3"}
 tqdm = "^4.66.1"
