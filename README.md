@@ -11,6 +11,7 @@ Checkout [continuous-eval repo](https://github.com/relari-ai/continuous-eval) an
 | Complex RAG                 | Langchain   | continuous-eval | Complex QA chatbot over select Paul Graham essays  |
 | Simple Tools                | LlamaIndex  | continuous-eval | Math question solver using simple tools            |
 | Context Augmentation Agent  | LlamaIndex  | continuous-eval | QA over Uber financial dataset using agents          |
+| Sentiment Classification  | LlamaIndex  | continuous-eval | Single label classification of sentence sentiment          |
 
 
 
