@@ -1,23 +1,12 @@
 from pathlib import Path
 
-from continuous_eval.eval.manager import eval_manager
+from relari.eval.manager import eval_manager
 from examples.langchain.simple_rag.pipeline import pipeline
+from relari import RelariClient
 
 if __name__ == "__main__":
     eval_manager.set_pipeline(pipeline)
-
-    # Evaluation
     eval_manager.evaluation.load(Path("results.jsonl"))
-    eval_manager.run_metrics()
-    eval_manager.metrics.save(Path("metrics_results.json"))
 
-    # Tests
-    agg = eval_manager.metrics.aggregate()
-    print(agg)
-    eval_manager.run_tests()
-    eval_manager.tests.save(Path("test_results.json"))
-
-    for module_name, test_results in eval_manager.tests.results.items():
-        print(f"{module_name}")
-        for test_name in test_results:
-            print(f" - {test_name}: {test_results[test_name]}")
+    client = RelariClient()
+    client.start_remote_evaluation()

@@ -5,7 +5,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
-from continuous_eval.eval.manager import eval_manager
+from relari.eval.manager import eval_manager
 from examples.langchain.simple_rag.pipeline import pipeline
 load_dotenv()
 
@@ -43,21 +43,19 @@ def ask(q, retrieved_docs):
 
 if __name__ == "__main__":
     eval_manager.set_pipeline(pipeline)
-    eval_manager.start_run()
-    while eval_manager.is_running():
-        if eval_manager.curr_sample is None:
-            break
-        q = eval_manager.curr_sample["question"]
-        # Run and log Retriever results
-        retrieved_docs = retrieve(q)
-        eval_manager.log("retriever", [doc.__dict__ for doc in retrieved_docs])
-        # Run and log Reranker results
-        reranked_docs = rerank(q, retrieved_docs)
-        eval_manager.log("reranker", [doc.__dict__ for doc in reranked_docs])
-        # Run and log Generator results
-        response = ask(q, reranked_docs)
-        eval_manager.log("llm", response)
-        print(f"Q: {q}\nA: {response}\n")
-        eval_manager.next_sample()
+    eval_manager.set_metadata({"name": "SimpleRAG"})
+    with eval_manager.new_experiment as experiment:
+        for sample in experiment:
+            q = eval_manager.curr_sample["question"]
+            # Run and log Retriever results
+            retrieved_docs = retrieve(q)
+            eval_manager.log("retriever", [doc.__dict__ for doc in retrieved_docs])
+            # Run and log Reranker results
+            reranked_docs = rerank(q, retrieved_docs)
+            eval_manager.log("reranker", [doc.__dict__ for doc in reranked_docs])
+            # Run and log Generator results
+            response = ask(q, reranked_docs)
+            eval_manager.log("llm", response)
+            print(f"Q: {q}\nA: {response}\n")
 
     eval_manager.evaluation.save(Path("results.jsonl"))
