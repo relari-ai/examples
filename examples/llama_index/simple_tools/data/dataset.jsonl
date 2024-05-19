@@ -1,7 +1,7 @@
-{"question": "What's 212 multiplied by 122?", "answers": ["25864"], "tools":[{"name":"multiply", "kwargs":{"a":212, "b": 122}}]}
-{"question": "What's 34 multiplied by 83?", "answers": ["2822"], "tools":[{"name":"multiply", "kwargs":{"a":34, "b": 83}}]}
-{"question": "What's 34*83?", "answers": ["2822"], "tools":[{"name":"multiply", "kwargs":{"a":34, "b": 83}}]}
-{"question": "What's 212 plus 122?", "answers": ["334"], "tools":[{"name":"add", "kwargs":{"a":212, "b": 122}}]}
-{"question": "What's 34+83?", "answers": ["334"], "tools":[{"name":"add", "kwargs":{"a":34, "b": 83}}]}
-{"question": "What's 212 minus 122?", "answers": ["90"], "tools":[{"name":"add", "kwargs":{"a":212, "b": -122}}]}
-{"question": "What's 34-83?", "answers": ["-49"], "tools":[{"name":"add", "kwargs":{"a":34, "b": -83}}]}
+{"uid": "1", "question": "What's 212 multiplied by 122?", "answers": ["25864"], "tools":[{"name":"multiply", "kwargs":{"a":212, "b": 122}}]}
+{"uid": "2", "question": "What's 34 multiplied by 83?", "answers": ["2822"], "tools":[{"name":"multiply", "kwargs":{"a":34, "b": 83}}]}
+{"uid": "3", "question": "What's 34*83?", "answers": ["2822"], "tools":[{"name":"multiply", "kwargs":{"a":34, "b": 83}}]}
+{"uid": "4", "question": "What's 212 plus 122?", "answers": ["334"], "tools":[{"name":"add", "kwargs":{"a":212, "b": 122}}]}
+{"uid": "5", "question": "What's 34+83?", "answers": ["334"], "tools":[{"name":"add", "kwargs":{"a":34, "b": 83}}]}
+{"uid": "6", "question": "What's 212 minus 122?", "answers": ["90"], "tools":[{"name":"add", "kwargs":{"a":212, "b": -122}}]}
+{"uid": "7", "question": "What's 34-83?", "answers": ["-49"], "tools":[{"name":"add", "kwargs":{"a":34, "b": -83}}]}

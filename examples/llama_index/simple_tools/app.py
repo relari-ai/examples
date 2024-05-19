@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from continuous_eval.eval.manager import eval_manager
+from continuous_eval.eval.logger import PipelineLogger
 from llama_index.agent.openai_legacy import FnRetrieverOpenAIAgent
 from llama_index.core import VectorStoreIndex
 from llama_index.core.objects import ObjectIndex, SimpleToolNodeMapping
@@ -8,24 +8,25 @@ from llama_index.core.tools import FunctionTool
 
 from examples.llama_index.simple_tools.pipeline import pipeline
 
-eval_manager.set_pipeline(pipeline)
+pipelog = PipelineLogger(pipeline=pipeline)
+curr_uid = None
 
 
 def multiply(a: int, b: int) -> int:
     """Multiply two integers and returns the result integer"""
-    eval_manager.log("llm", "multiply", tool_args={"a": a, "b": b})
+    pipelog.log(uid=curr_uid, module="llm", value="multiply", tool_args={"a": a, "b": b})
     return a * b
 
 
 def add(a: int, b: int) -> int:
     """Add two integers and returns the result integer"""
-    eval_manager.log("llm", "multiply", tool_args={"a": a, "b": b})
+    pipelog.log(uid=curr_uid, module="llm", value="add", tool_args={"a": a, "b": b})
     return a + b
 
 
 def useless(a: int, b: int) -> int:
     """Toy useless function."""
-    eval_manager.log("llm", "multiply", tool_args={"a": a, "b": b})
+    pipelog.log(uid=curr_uid, module="llm", value="useless", tool_args={"a": a, "b": b})
     return a
 
 
@@ -48,15 +49,14 @@ def ask(query, verbose: bool = True):
 
 
 if __name__ == "__main__":
-    eval_manager.start_run()
-    while eval_manager.is_running():
-        if eval_manager.curr_sample is None:
-            break
-        question = eval_manager.curr_sample["question"]
-        # Retriever
-        response = ask(question)
-        eval_manager.log("llm", response)
-        print(f"Q: {question}\nA: {response}\n")
-        eval_manager.next_sample()
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
 
-    eval_manager.evaluation.save(Path("results.jsonl"))
+    for datum in pipelog.pipeline.dataset.data:
+        curr_uid = datum["uid"] # set the global variable
+        # Retriever
+        response = ask(datum["question"])
+        pipelog.log(uid=curr_uid, module="llm", value=response)
+        print(f"Q: {datum['question']}\nA: {response}\n")
+
+    pipelog.save(output_dir/"llamaindex_tools.jsonl")

@@ -1,5 +1,8 @@
+from pathlib import Path
+from time import perf_counter
 from typing import Any
 
+from continuous_eval.eval.logger import PipelineLogger, LogMode
 from llama_index.agent.openai_legacy import ContextRetrieverOpenAIAgent
 from llama_index.core import (
     Document,
@@ -12,52 +15,73 @@ from llama_index.core.tools import QueryEngineTool, ToolMetadata
 from llama_index.core.tools.types import ToolMetadata, ToolOutput
 from loguru import logger
 
-from continuous_eval.eval.manager import eval_manager
-from examples.llama_index.context_augmentation.pipeline import dataset, pipeline
+from examples.llama_index.context_augmentation.pipeline import pipeline
 
-eval_manager.set_pipeline(pipeline)
+## We setup the pipeline logger
+pipelog = PipelineLogger(pipeline=pipeline)
+curr_uid = None
 
 VERBOSE = False
 
 
+## We extend Llama-index logger to allow logging
 class LoggableQueryEngineTool(QueryEngineTool):
     def call(self, *args: Any, **kwargs: Any) -> ToolOutput:
         logger.info(
             f"Calling {self.metadata.name} with args: {args} and kwargs: {kwargs}"
         )
         ret = super().call(*args, **kwargs)
-        eval_manager.log("rag", ret.content)
+        # we log the agent use first
+        pipelog.log(
+            uid=curr_uid,
+            module="retriever_agent",
+            value=self.metadata.name,
+            tool_args=kwargs,
+        )
+        # and then the response
+        pipelog.log(uid=curr_uid, module="retriever_agent", value=ret.content)
         # ret.raw_output.source_nodes
         return ret
 
 
 try:
     # load indexes
-    storage_context = StorageContext.from_defaults(persist_dir="./data/uber/march")
+    storage_context = StorageContext.from_defaults(
+        persist_dir="data/uber/vectorstore/march"
+    )
     march_index = load_index_from_storage(storage_context)
-    storage_context = StorageContext.from_defaults(persist_dir="./data/uber/june")
+    storage_context = StorageContext.from_defaults(
+        persist_dir="data/uber/vectorstore/june"
+    )
     june_index = load_index_from_storage(storage_context)
-    storage_context = StorageContext.from_defaults(persist_dir="./data/uber/sept")
+    storage_context = StorageContext.from_defaults(
+        persist_dir="data/uber/vectorstore/sept"
+    )
     sept_index = load_index_from_storage(storage_context)
+    print("Indexes loaded...")
 except:
     # build indexes across the three data sources
+    print("Building indexes...")
+    tic = perf_counter()
     march_docs = SimpleDirectoryReader(
-        input_files=["./data/uber/uber_10q_march_2022.pdf"]
+        input_files=["data/uber/uber_10q_march_2022.pdf"]
     ).load_data()
     june_docs = SimpleDirectoryReader(
-        input_files=["./data/uber/uber_10q_june_2022.pdf"]
+        input_files=["data/uber/uber_10q_june_2022.pdf"]
     ).load_data()
     sept_docs = SimpleDirectoryReader(
-        input_files=["./data/uber/uber_10q_sept_2022.pdf"]
+        input_files=["data/uber/uber_10q_sept_2022.pdf"]
     ).load_data()
     # build index
     march_index = VectorStoreIndex.from_documents(march_docs)
     june_index = VectorStoreIndex.from_documents(june_docs)
     sept_index = VectorStoreIndex.from_documents(sept_docs)
     # persist index
-    march_index.storage_context.persist(persist_dir="./data/uber/march")
-    june_index.storage_context.persist(persist_dir="./data/uber/june")
-    sept_index.storage_context.persist(persist_dir="./data/uber/sept")
+    march_index.storage_context.persist(persist_dir="data/uber/vectorstore/march")
+    june_index.storage_context.persist(persist_dir="data/uber/vectorstore/june")
+    sept_index.storage_context.persist(persist_dir="data/uber/vectorstore/sept")
+    toc = perf_counter()
+    print(f"Indexes built, took {toc - tic:0.4f} seconds.")
 
 march_engine = march_index.as_query_engine(similarity_top_k=3)
 june_engine = june_index.as_query_engine(similarity_top_k=3)
@@ -111,17 +135,21 @@ context_agent = ContextRetrieverOpenAIAgent.from_tools_and_retriever(
 
 def ask(query: str):
     response = context_agent.chat(query)
-    eval_manager.log("answer", response.response)
-    return response
+    return response.response
 
 
-if __name__ == "__main__":  
-    eval_manager.start_run()
-    while eval_manager.is_running():
-        if eval_manager.curr_sample is None:
-            break
-        response = ask(eval_manager.curr_sample["question"])
-        print(response)
-        eval_manager.next_sample()
+if __name__ == "__main__":
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
 
-    print(eval_manager.samples)
+    print("Running pipeline...")
+    for datum in pipelog.pipeline.dataset.data:
+        curr_uid = datum["uid"]  # set the global variable
+        response = ask(datum["question"])
+        pipelog.log(uid=curr_uid, module="answer", value=response)
+        print(f"Q: {datum['question']}\nA: {response}\n")
+
+    out_fname = output_dir / "llamaindex_contex_augmentation.jsonl"
+    pipelog.save(out_fname)
+    print("Pipeline run completed.")
+    print(f"Results saved to {out_fname}")

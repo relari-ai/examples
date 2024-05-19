@@ -3,9 +3,9 @@ description: Uber 10Q filings from 2022
 format: jsonl
 license: CC0
 fields:
-  uuid:
+  uid:
     description: Unique identifier for the filing
-    type: UUID
+    type: UID
   question:
     description: The question asked in the filing
     type: str

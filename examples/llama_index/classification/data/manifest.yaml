@@ -1,0 +1,19 @@
+name: Sentiment Analysis
+description: A small sentiment analysis dataset
+format: jsonl
+license: MIT
+fields:
+  uid:
+    description: Unique identifier for the filing
+    type: UID
+  title:
+    description: A news article title
+    type: str
+    ground_truth: false
+  sentiment:
+    description: The sentiment of the article
+    type: str
+    ground_truth: true
+  
+  
+  
