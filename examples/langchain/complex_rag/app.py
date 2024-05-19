@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
-
-from continuous_eval.eval.manager import eval_manager
+from continuous_eval.eval.logger import PipelineLogger
 from langchain_community.document_loaders.directory import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.retrievers.document_compressors import CohereRerank
@@ -11,13 +10,13 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.retrievers import BM25Retriever
 from dotenv import load_dotenv
 from examples.langchain.complex_rag.pipeline import pipeline
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 load_dotenv()
 
-eval_manager.set_pipeline(pipeline)
 
 # Load documents and split
-loader = DirectoryLoader("examples/langchain/rag_data/documents/208_219_graham_essays")
+loader = DirectoryLoader("data/paul_graham/documents/208_219_graham_essays")
 docs = loader.load()
 TextSplitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
 split_docs = TextSplitter.split_documents(docs)
@@ -31,12 +30,12 @@ db = Chroma(
 # Set up LLM
 model = ChatGoogleGenerativeAI(model="gemini-pro")
 
+
 def base_retrieve(q):
     # Basic retriever
-    basic_retriever = db.as_retriever(
-        search_type="similarity", search_kwargs={"k": 4}
-    )
+    basic_retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 4})
     return basic_retriever.invoke(q)
+
 
 def bm25_retrieve(q):
     # bm25 retriever
@@ -44,11 +43,10 @@ def bm25_retrieve(q):
     bm25_retriever.k = 2
     return bm25_retriever.invoke(q)
 
+
 def hyde_generator(q):
     # HyDE generator
-    system_prompt = (
-        "Generate a hypothetical document paragraph that contains an answer to the question below."
-    )
+    system_prompt = "Generate a hypothetical document paragraph that contains an answer to the question below."
     user_prompt = f"Question: {q}\n\n"
     try:
         result = model.invoke(system_prompt + user_prompt).content
@@ -57,13 +55,14 @@ def hyde_generator(q):
         result = q
     return result
 
+
 def hyde_retrieve(hypothetical_doc):
     # HyDE retriever
-    hyde_retriever = db.as_retriever(
-        search_type="similarity", search_kwargs={"k": 3}
-    )
+    hyde_retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 3})
     return hyde_retriever.invoke(hypothetical_doc)
 
+
+@retry(stop=stop_after_attempt(10), wait=wait_fixed(61))  # Free tier rate limit
 def rerank(q, retrieved_docs):
     # reranker
     compressor = CohereRerank(cohere_api_key=os.getenv("COHERE_API_KEY"))
@@ -89,32 +88,49 @@ def ask(q, retrieved_docs):
 
 
 if __name__ == "__main__":
-    eval_manager.start_run()
-    while eval_manager.is_running():
-        if eval_manager.curr_sample is None:
-            break
-        q = eval_manager.curr_sample["question"]
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
+
+    pipelog = PipelineLogger(pipeline=pipeline)
+    for datum in pipeline.dataset.data:
+        q = datum["question"]
         # Base Retriever
         base_retrieved_docs = base_retrieve(q)
-        eval_manager.log("base_retriever", [doc.__dict__ for doc in base_retrieved_docs])
+        pipelog.log(
+            uid=datum["uid"],
+            module="base_retriever",
+            value=[doc.__dict__ for doc in base_retrieved_docs],
+        )
         # BM25 Retriever
         bm25_retrieved_docs = bm25_retrieve(q)
-        eval_manager.log("bm25_retriever", [doc.__dict__ for doc in bm25_retrieved_docs])
+        pipelog.log(
+            uid=datum["uid"],
+            module="bm25_retriever",
+            value=[doc.__dict__ for doc in bm25_retrieved_docs],
+        )
         # HyDE Generator
         hypothetical_doc = hyde_generator(q)
-        eval_manager.log("HyDE_generator", hypothetical_doc)
+        pipelog.log(uid=datum["uid"], module="HyDE_generator", value=hypothetical_doc)
         # HyDE Retriever
         hyde_retrieved_docs = hyde_retrieve(hypothetical_doc)
-        eval_manager.log("HyDE_retriever", [doc.__dict__ for doc in hyde_retrieved_docs])
+        pipelog.log(
+            uid=datum["uid"],
+            module="HyDE_retriever",
+            value=[doc.__dict__ for doc in hyde_retrieved_docs],
+        )
 
-        fused_docs = base_retrieved_docs + bm25_retrieved_docs + hyde_retrieved_docs
         # Reranker
+        fused_docs = base_retrieved_docs + bm25_retrieved_docs + hyde_retrieved_docs
         reranked_docs = rerank(q, fused_docs)
-        eval_manager.log("cohere_reranker", [doc.__dict__ for doc in reranked_docs])
+        pipelog.log(
+            uid=datum["uid"],
+            module="cohere_reranker",
+            value=[doc.__dict__ for doc in reranked_docs],
+        )
+        
         # Generator
         response = ask(q, reranked_docs)
-        eval_manager.log("answer_generator", response)
+        pipelog.log(uid=datum["uid"], module="answer_generator", value=response)
         print(f"Q: {q}\nA: {response}\n")
-        eval_manager.next_sample()
 
-    eval_manager.evaluation.save(Path("results.jsonl"))
+    pipelog.save(output_dir / "langchain_complex_rag.jsonl")

@@ -1,25 +1,29 @@
 from pathlib import Path
 
-from continuous_eval.eval.manager import eval_manager
+from continuous_eval.eval.logger import PipelineLogger
+from continuous_eval.eval.result_types import MetricsResults
+from continuous_eval.eval.runner import EvaluationRunner
+
 from examples.langchain.complex_rag.pipeline import pipeline
 
 if __name__ == "__main__":
-    eval_manager.set_pipeline(pipeline)
+    output_dir = Path("output")
 
-    # Evaluation
-    eval_manager.evaluation.load(Path("results.jsonl"))
-    eval_manager.run_metrics()
-    eval_manager.metrics.save(Path("metrics_results.json"))
+    pipelog = PipelineLogger(pipeline=pipeline)
+    pipelog.load(output_dir / "langchain_complex_rag.jsonl")
 
-    # Tests
-    eval_manager.metrics.load(Path("metrics_results.json"))
-    agg = eval_manager.metrics.aggregate() # optional
-    print(agg)
-    eval_manager.run_tests()
-    eval_manager.tests.save(Path("test_results.json"))
+    # Run the evaluation...
+    evalrunner = EvaluationRunner(pipeline)
+    metrics = evalrunner.evaluate(pipelog)
+    metrics.save(output_dir / "langchain_complex_rag_metrics.json")
+    # ...or you can load from file
+    # metrics = MetricsResults(pipeline)
+    # metrics.load("output_dir / "langchain_complex_rag_metrics.json")
+    print(metrics.aggregate())
 
-    # eval_manager.tests.load(Path("test_results.json"))
-    for module_name, test_results in eval_manager.tests.results.items():
+    print("\nTests results:")
+    tests = evalrunner.test(metrics)
+    for module_name, test_results in tests.results.items():
         print(f"{module_name}")
         for test_name in test_results:
-            print(f" - {test_name}: {test_results[test_name]}")
+            print(f" - {test_name}: {'PASS' if test_results[test_name] else 'FAIL'}")

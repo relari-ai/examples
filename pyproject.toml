@@ -8,26 +8,35 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.9.0,<3.12"
 
-langchain-community = "^0.0.17"
-langchain-openai = "^0.0.5"
+
+chromadb = "^0.4.22" 
+continuous-eval = {path = "../continuous-eval", develop = true}
+unstructured = {extras = ["pdf"], version = "^0.13.7"}
+tqdm = "^4.66.1"
+loguru = "^0.7.2"
+pyyaml = "^6.0.1"
+
+## Langchain
+[tool.poetry.group.langchain]
+optional = true
+[tool.poetry.group.langchain.dependencies]
+langchain-community = "^0.0.29"
+langchain-openai = "^0.1.7"
+langchain-anthropic = "^0.1.0"
 langchain-google-genai = "^0.0.6"
 langchain = "^0.1.5"
+cohere = "^4.47"
+rank-bm25 = "^0.2.2"
 
-chromadb = "^0.4.22"
 
-continuous-eval = "0.3.0"
-
-unstructured = {extras = ["pdf"], version = "^0.12.3"}
-tqdm = "^4.66.1"
-
+## Llama Index
+[tool.poetry.group.llama-index]
+optional = true
+[tool.poetry.group.llama-index.dependencies]
 llama-index = "^0.10.4"
 llama-index-agent-openai-legacy = "^0.1.1"
 llama-index-agent-openai = "^0.1.1"
 llama-index-llms-openai = "^0.1.1"
-loguru = "^0.7.2"
-pyyaml = "^6.0.1"
-cohere = "^4.47"
-rank-bm25 = "^0.2.2"
 
 
 [build-system]

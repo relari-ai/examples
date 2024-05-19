@@ -1,13 +1,11 @@
 from pathlib import Path
 from typing import Literal
 
-from continuous_eval.eval.manager import eval_manager
+from continuous_eval.eval.logger import PipelineLogger
 from llama_index.core.program import LLMTextCompletionProgram
 from pydantic import BaseModel
 
 from examples.llama_index.classification.pipeline import pipeline
-
-eval_manager.set_pipeline(pipeline)
 
 
 class SentimentAnalysis(BaseModel):
@@ -30,15 +28,15 @@ def sentiment_analysis(title: str) -> SentimentAnalysis:
 
 
 if __name__ == "__main__":
-    eval_manager.start_run()
-    while eval_manager.is_running():
-        if eval_manager.curr_sample is None:
-            break
-        title = eval_manager.curr_sample["title"]
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
+
+    pipelog = PipelineLogger(pipeline=pipeline)
+    for datum in pipelog.pipeline.dataset.data:
+        title = datum["title"]
         # Retriever
         sentiment = sentiment_analysis(title)
-        eval_manager.log("sentiment_analysis", sentiment)
+        pipelog.log(uid=datum["uid"], module="sentiment_analysis", value=sentiment)
         print(f"Title: {title}\nA: {sentiment}\n")
-        eval_manager.next_sample()
 
-    eval_manager.evaluation.save(Path("results.jsonl"))
+    pipelog.save(output_dir/"llamaindex_classification.jsonl")

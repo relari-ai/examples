@@ -1,18 +1,16 @@
 from pathlib import Path
 
-from continuous_eval.eval.manager import eval_manager
+from continuous_eval.eval.logger import PipelineLogger
+from continuous_eval.eval.runner import EvaluationRunner
 from examples.llama_index.classification.pipeline import pipeline
 
 if __name__ == "__main__":
-    eval_manager.set_pipeline(pipeline)
+    output_dir = Path("output")
 
-    # Evaluation
-    eval_manager.evaluation.load(Path("results.jsonl"))
-    eval_manager.run_metrics()
-    eval_manager.metrics.save(Path("metrics_results.json"))
+    pipelog = PipelineLogger(pipeline=pipeline)
+    pipelog.load(output_dir / "llamaindex_classification.jsonl")
 
-    # Tests
-    eval_manager.metrics.load(Path("metrics_results.json"))
-    agg = eval_manager.metrics.aggregate()
-    print(agg)
-    print("Done")
+    evalrunner = EvaluationRunner(pipeline)
+    metrics = evalrunner.evaluate(pipelog)
+    metrics.save(output_dir / "llamaindex_classification_metrics.json")
+    print(metrics.aggregate())

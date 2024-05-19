@@ -1,0 +1,22 @@
+name: Paul Graham's Essays
+description: Paul Graham's Essays Q&A
+format: jsonl
+license: MIT
+fields:
+  uid:
+    description: Unique identifier for the filing
+    type: UID
+  question:
+    description: The question asked by the user
+    type: str
+    ground_truth: false
+  ground_truth:
+    description: The correct answer to the question
+    type: List[str]
+    ground_truth: true
+  ground_truth_context:
+    description: Ground truth contexts
+    type: List[str]
+    ground_truth: true
+  
+  

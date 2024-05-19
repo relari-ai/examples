@@ -3,21 +3,13 @@ from continuous_eval.metrics.retrieval import (
     # === Deterministic
     PrecisionRecallF1,
     RankedRetrievalMetrics,
-    # === LLM-based
-    LLMBasedContextCoverage,
-    LLMBasedContextPrecision,
 )
 from continuous_eval.metrics.generation.text import (
     # === Deterministic
     DeterministicFaithfulness,
     DeterministicAnswerCorrectness,
     FleschKincaidReadability,
-    # === Semantic
-    BertAnswerRelevance,
-    BertAnswerSimilarity,
-    DebertaAnswerScores,
     # === LLM-based
-    LLMBasedFaithfulness,
     LLMBasedAnswerCorrectness,
     LLMBasedAnswerRelevance,
     LLMBasedStyleConsistency,
@@ -25,7 +17,7 @@ from continuous_eval.metrics.generation.text import (
 from typing import List, Dict
 from continuous_eval.eval.tests import GreaterOrEqualThan, MeanGreaterOrEqualThan
 
-dataset = Dataset("examples/langchain/rag_data/eval_golden_dataset")
+dataset = Dataset("data/paul_graham/dataset")
 
 Documents = List[Dict[str, str]]
 DocumentsContent = ModuleOutput(lambda x: [z["page_content"] for z in x])
@@ -128,36 +120,24 @@ llm = Module(
     eval=[
         FleschKincaidReadability().use(answer=ModuleOutput()),
         DeterministicAnswerCorrectness().use(
-            answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
+            answer=ModuleOutput(), ground_truth_answers=dataset.ground_truth
         ),
         DeterministicFaithfulness().use(
             answer=ModuleOutput(),
             retrieved_context=ModuleOutput(DocumentsContent, module=reranker),
         ),
-        BertAnswerRelevance().use(answer=ModuleOutput(), question=dataset.question),
-        BertAnswerSimilarity().use(
-            answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
+        LLMBasedAnswerCorrectness().use(
+            question=dataset.question,
+            answer=ModuleOutput(),
+            ground_truth_answers=dataset.ground_truth,
         ),
-        DebertaAnswerScores().use(
-            answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
+        LLMBasedAnswerRelevance().use(
+            question=dataset.question,
+            answer=ModuleOutput(),
         ),
-        # LLMBasedFaithfulness().use(
-        #     answer=ModuleOutput(),
-        #     retrieved_context=ModuleOutput(DocumentsContent, module=reranker),
-        #     question=dataset.question,
-        # ),
-        # LLMBasedAnswerCorrectness().use(
-        #     question=dataset.question,
-        #     answer=ModuleOutput(),
-        #     ground_truth_answers=dataset.ground_truths,
-        # ),
-        # LLMBasedAnswerRelevance().use(
-        #     question=dataset.question,
-        #     answer=ModuleOutput(),
-        # ),
-        # LLMBasedStyleConsistency().use(
-        #     answer=ModuleOutput(), ground_truth_answers=dataset.ground_truths
-        # ),
+        LLMBasedStyleConsistency().use(
+            answer=ModuleOutput(), ground_truth_answers=dataset.ground_truth
+        ),
     ],
     tests=[
         GreaterOrEqualThan(
