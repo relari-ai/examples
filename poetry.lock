@@ -670,30 +670,32 @@ cron = ["capturer (>=2.4)"]
 
 [[package]]
 name = "continuous-eval"
-version = "0.3.11"
+version = "0.3.12"
 description = "Open-Source Evaluation for GenAI Application Pipelines."
 optional = false
-python-versions = ">=3.9,<3.12"
-files = []
-develop = true
+python-versions = "<3.12,>=3.9"
+files = [
+    {file = "continuous_eval-0.3.12-py3-none-any.whl", hash = "sha256:bb2799815294613f45e66c1507003c892a267c1176f01c2fc5c23672e6d5e1eb"},
+    {file = "continuous_eval-0.3.12.tar.gz", hash = "sha256:354fa1475e2d0dae67bea6a761f71e6f8b03e0dacb5e23d0f98789e58aadfb15"},
+]
 
 [package.dependencies]
-appdirs = "^1.4.4"
-imbalanced-learn = "^0.11.0"
-mapie = "^0.7.0"
-munkres = "^1.1.4"
-nltk = "^3.8.1"
-openai = "^1.3.7"
-pandas = "^2.1.4"
-protobuf = "^4.23.4"
-python-dotenv = "^1.0.0"
-pyyaml = "^6.0.1"
-requests = "^2.31.0"
-rouge = "^1.0.1"
-sentencepiece = "^0.2.0"
-tenacity = "^8.2.3"
-thefuzz = "^0.22.1"
-tqdm = "^4.66.1"
+appdirs = ">=1.4.4,<2.0.0"
+imbalanced-learn = ">=0.11.0,<0.12.0"
+mapie = ">=0.7.0,<0.8.0"
+munkres = ">=1.1.4,<2.0.0"
+nltk = ">=3.8.1,<4.0.0"
+openai = ">=1.3.7,<2.0.0"
+pandas = ">=2.1.4,<3.0.0"
+protobuf = ">=4.23.4,<5.0.0"
+python-dotenv = ">=1.0.0,<2.0.0"
+pyyaml = ">=6.0.1,<7.0.0"
+requests = ">=2.31.0,<3.0.0"
+rouge = ">=1.0.1,<2.0.0"
+sentencepiece = ">=0.2.0,<0.3.0"
+tenacity = ">=8.2.3,<9.0.0"
+thefuzz = ">=0.22.1,<0.23.0"
+tqdm = ">=4.66.1,<5.0.0"
 
 [package.extras]
 anthropic = ["anthropic (>=0.7.7,<0.8.0)"]
@@ -702,10 +704,6 @@ cohere = ["cohere (>=4.54,<5.0)"]
 gemini = ["google-generativeai (>=0.3.1,<0.4.0)"]
 langchain = ["langchain-community (>=0.0.29,<0.0.30)"]
 sqlglot = ["sqlglot (>=23.17.0,<24.0.0)"]
-
-[package.source]
-type = "directory"
-url = "../continuous-eval"
 
 [[package]]
 name = "contourpy"
@@ -6972,4 +6970,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.0,<3.12"
-content-hash = "80300464c19008cc6a41bc4b7cb469be56bea936c8897bb6b8e3d26fa3e20ac9"
+content-hash = "f39f780e6ec7dd6d46c5f3fcc9e37b2f7f09fd4f40ad275c66c64d0c2244e930"
