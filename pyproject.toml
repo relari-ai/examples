@@ -38,6 +38,12 @@ llama-index-agent-openai-legacy = "^0.1.1"
 llama-index-agent-openai = "^0.1.1"
 llama-index-llms-openai = "^0.1.1"
 
+## Haystack
+[tool.poetry.group.haystack]
+optional = true
+[tool.poetry.group.haystack.dependencies]
+haystack-ai = "^2.2.3"
+sentence-transformers = ">=2.2.0"
 
 [build-system]
 requires = ["poetry-core"]
