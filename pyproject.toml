@@ -10,7 +10,7 @@ python = ">=3.10,<3.12"
 
 
 chromadb = "^0.4.22"
-# continuous-eval = "^0.3.0"
+# continuous-eval = "^0.3.14"
 continuous-eval = {path = "../continuous-eval", develop = true}
 tqdm = "^4.66.1"
 loguru = "^0.7.2"
@@ -32,7 +32,6 @@ langchain = "^0.3.13"
 cohere = "^5.13.4"
 rank-bm25 = "^0.2.2"
 
-
 ## Llama Index
 [tool.poetry.group.llama-index]
 optional = true
@@ -46,6 +45,13 @@ optional = true
 [tool.poetry.group.haystack.dependencies]
 haystack-ai = "^2.8.0"
 sentence-transformers = ">=2.2.0"
+
+## Swarm
+[tool.poetry.group.swarm]
+optional = true
+[tool.poetry.group.swarm.dependencies]
+swarm = {git = "https://github.com/openai/swarm.git", python = ">=3.10,<3.12"}
+
 
 [build-system]
 requires = ["poetry-core"]
