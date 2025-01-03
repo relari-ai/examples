@@ -10,8 +10,8 @@ python = ">=3.10,<3.12"
 
 
 chromadb = "^0.4.22"
-# continuous-eval = "^0.3.14"
-continuous-eval = {path = "../continuous-eval", develop = true}
+continuous-eval = "^0.3.14"
+# continuous-eval = {path = "../continuous-eval", develop = true}
 tqdm = "^4.66.1"
 loguru = "^0.7.2"
 
