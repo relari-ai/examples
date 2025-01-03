@@ -1,3 +1,0 @@
-{"uid": "1", "question": "What is Uber revenue as of March 2022?", "answer": ["Uber's revenue as of March 2022 is $6,854 million.","$6,854 million","$6,854M"], "tool_calls": [{"name": "uber_march_10q"}]}
-{"uid": "2", "question": "What is Uber revenue as of Sept 2022?", "answer": ["Uber's revenue as of September 2022 is $23,270 million.","$23,270 million","$23,270M"], "tool_calls": [{"name": "uber_sept_10q"}]}
-{"uid": "3", "question": "What is Uber revenue as of June 2022?", "answer": ["Uber's revenue as of September 2022 is $8,073 million.","$8,073 million","$8,073M"], "tool_calls": [{"name": "uber_june_10q"}] }

@@ -1,0 +1,277 @@
+[
+  {
+    "id": "b4a402a1",
+    "first_name": "Michael",
+    "last_name": "Davis",
+    "email": "michael.davis@example.com",
+    "status": "processing",
+    "items": [
+      {
+        "sku": "1006",
+        "name": "Webcam",
+        "price": 89.99
+      },
+      {
+        "sku": "1007",
+        "name": "Headphones",
+        "price": 59.99
+      },
+      {
+        "sku": "1004",
+        "name": "USB Cable",
+        "price": 9.99
+      },
+      {
+        "sku": "1005",
+        "name": "Laptop Stand",
+        "price": 39.99
+      }
+    ],
+    "date": "2024-12-30T10:17:30.466277"
+  },
+  {
+    "id": "07fafef0",
+    "first_name": "Michael",
+    "last_name": "Davis",
+    "email": "michael.davis@example.com",
+    "status": "refunded",
+    "items": [
+      {
+        "sku": "1004",
+        "name": "USB Cable",
+        "price": 9.99
+      },
+      {
+        "sku": "1008",
+        "name": "External SSD",
+        "price": 149.99
+      },
+      {
+        "sku": "1007",
+        "name": "Headphones",
+        "price": 59.99
+      },
+      {
+        "sku": "1003",
+        "name": "Monitor",
+        "price": 199.99
+      }
+    ],
+    "date": "2024-12-31T10:17:30.466277"
+  },
+  {
+    "id": "f1417244",
+    "first_name": "Laura",
+    "last_name": "Johnson",
+    "email": "laura.johnson@example.com",
+    "status": "delivered",
+    "items": [
+      {
+        "sku": "1002",
+        "name": "Keyboard",
+        "price": 49.99
+      },
+      {
+        "sku": "1010",
+        "name": "Charger",
+        "price": 24.99
+      },
+      {
+        "sku": "1001",
+        "name": "Wireless Mouse",
+        "price": 29.99
+      },
+      {
+        "sku": "1004",
+        "name": "USB Cable",
+        "price": 9.99
+      },
+      {
+        "sku": "1007",
+        "name": "Headphones",
+        "price": 59.99
+      }
+    ],
+    "date": "2025-01-01T10:17:30.466277"
+  },
+  {
+    "id": "b92911c2",
+    "first_name": "Emily",
+    "last_name": "Brown",
+    "email": "emily.brown@example.com",
+    "status": "processing",
+    "items": [
+      {
+        "sku": "1001",
+        "name": "Wireless Mouse",
+        "price": 29.99
+      }
+    ],
+    "date": "2025-01-02T10:17:30.466277"
+  },
+  {
+    "id": "3b888a11",
+    "first_name": "John",
+    "last_name": "Smith",
+    "email": "john.smith@example.com",
+    "status": "delivered",
+    "items": [
+      {
+        "sku": "1009",
+        "name": "Phone Case",
+        "price": 19.99
+      }
+    ],
+    "date": "2025-01-03T10:17:30.466277"
+  },
+  {
+    "id": "644ac31e",
+    "first_name": "Chris",
+    "last_name": "Brown",
+    "email": "chris.brown@example.com",
+    "status": "refunded",
+    "items": [
+      {
+        "sku": "1001",
+        "name": "Wireless Mouse",
+        "price": 29.99
+      },
+      {
+        "sku": "1002",
+        "name": "Keyboard",
+        "price": 49.99
+      },
+      {
+        "sku": "1004",
+        "name": "USB Cable",
+        "price": 9.99
+      }
+    ],
+    "date": "2025-01-04T10:17:30.466277"
+  },
+  {
+    "id": "21e54eee",
+    "first_name": "Sara",
+    "last_name": "Williams",
+    "email": "sara.williams@example.com",
+    "status": "delivered",
+    "items": [
+      {
+        "sku": "1003",
+        "name": "Monitor",
+        "price": 199.99
+      },
+      {
+        "sku": "1001",
+        "name": "Wireless Mouse",
+        "price": 29.99
+      },
+      {
+        "sku": "1006",
+        "name": "Webcam",
+        "price": 89.99
+      },
+      {
+        "sku": "1007",
+        "name": "Headphones",
+        "price": 59.99
+      },
+      {
+        "sku": "1004",
+        "name": "USB Cable",
+        "price": 9.99
+      }
+    ],
+    "date": "2025-01-05T10:17:30.466277"
+  },
+  {
+    "id": "976fc8e2",
+    "first_name": "Laura",
+    "last_name": "Martinez",
+    "email": "laura.martinez@example.com",
+    "status": "refunded",
+    "items": [
+      {
+        "sku": "1010",
+        "name": "Charger",
+        "price": 24.99
+      },
+      {
+        "sku": "1009",
+        "name": "Phone Case",
+        "price": 19.99
+      },
+      {
+        "sku": "1006",
+        "name": "Webcam",
+        "price": 89.99
+      },
+      {
+        "sku": "1007",
+        "name": "Headphones",
+        "price": 59.99
+      }
+    ],
+    "date": "2025-01-06T10:17:30.466277"
+  },
+  {
+    "id": "91c25281",
+    "first_name": "Laura",
+    "last_name": "Garcia",
+    "email": "laura.garcia@example.com",
+    "status": "delivered",
+    "items": [
+      {
+        "sku": "1004",
+        "name": "USB Cable",
+        "price": 9.99
+      },
+      {
+        "sku": "1009",
+        "name": "Phone Case",
+        "price": 19.99
+      },
+      {
+        "sku": "1002",
+        "name": "Keyboard",
+        "price": 49.99
+      },
+      {
+        "sku": "1010",
+        "name": "Charger",
+        "price": 24.99
+      }
+    ],
+    "date": "2025-01-07T10:17:30.466277"
+  },
+  {
+    "id": "7e96b12e",
+    "first_name": "Emily",
+    "last_name": "Jones",
+    "email": "emily.jones@example.com",
+    "status": "delivered",
+    "items": [
+      {
+        "sku": "1009",
+        "name": "Phone Case",
+        "price": 19.99
+      },
+      {
+        "sku": "1002",
+        "name": "Keyboard",
+        "price": 49.99
+      },
+      {
+        "sku": "1003",
+        "name": "Monitor",
+        "price": 199.99
+      },
+      {
+        "sku": "1001",
+        "name": "Wireless Mouse",
+        "price": 29.99
+      }
+    ],
+    "date": "2025-01-08T10:17:30.466277"
+  }
+]

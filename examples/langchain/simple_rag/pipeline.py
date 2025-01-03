@@ -8,10 +8,16 @@ from continuous_eval.metrics.generation.text import (
 )
 from continuous_eval.metrics.retrieval import PrecisionRecallF1, RankedRetrievalMetrics
 
-dataset = Dataset("data/paul_graham/dataset")
-
 Documents = List[Dict[str, str]]
-DocumentsContent = ModuleOutput(lambda x: [z["page_content"] for z in x])
+
+
+def get_documents_content(x: Documents) -> List[str]:
+    return [z["page_content"] for z in x]
+
+
+DocumentsContent = ModuleOutput(get_documents_content)
+
+dataset = Dataset("data/paul_graham/dataset")
 
 retriever = Module(
     name="retriever",
@@ -61,4 +67,5 @@ llm = Module(
 
 pipeline = Pipeline([retriever, reranker, llm], dataset=dataset)
 
-print(pipeline.graph_repr())
+if __name__ == "__main__":
+    print(pipeline.graph_repr())
