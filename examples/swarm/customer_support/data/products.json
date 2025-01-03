@@ -1,0 +1,12 @@
+[
+  { "sku": "1001", "name": "Wireless Mouse", "price": 29.99 },
+  { "sku": "1002", "name": "Keyboard", "price": 49.99 },
+  { "sku": "1003", "name": "Monitor", "price": 199.99 },
+  { "sku": "1004", "name": "USB Cable", "price": 9.99 },
+  { "sku": "1005", "name": "Laptop Stand", "price": 39.99 },
+  { "sku": "1006", "name": "Webcam", "price": 89.99 },
+  { "sku": "1007", "name": "Headphones", "price": 59.99 },
+  { "sku": "1008", "name": "External SSD", "price": 149.99 },
+  { "sku": "1009", "name": "Phone Case", "price": 19.99 },
+  { "sku": "1010", "name": "Charger", "price": 24.99 }
+]

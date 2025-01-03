@@ -41,4 +41,3 @@ if __name__ == "__main__":
     tests = evalrunner.test(metrics)
 
     print_metric_results(metrics)
-    print_test_results(tests)

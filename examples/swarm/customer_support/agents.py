@@ -1,19 +1,26 @@
 from swarm import Agent
 
-from  examples.swarm.customer_support.tools import escalate_to_manager, get_orders_dates, look_up_order, process_refund
+from examples.swarm.customer_support.tools import (
+    available_products,
+    escalate_to_manager,
+    get_orders,
+    look_up_order,
+    new_order,
+    process_refund,
+)
 
 refund_agent = Agent(
     name="Refund Agent",
     model="gpt-4o-mini",
     instructions="You are a refund agent. You are responsible to help the customer with processing a refund.",
-    functions=[look_up_order, process_refund, get_orders_dates],
+    functions=[look_up_order, process_refund, get_orders],
 )
 
 connoisseur_agent = Agent(
     name="Connoisseur Agent",
     model="gpt-4o-mini",
     instructions="You are a connoisseur agent. You are responsible to help the customer with placing a new order.",
-    functions=[escalate_to_manager],
+    functions=[escalate_to_manager, new_order, available_products, get_orders],
 )
 
 

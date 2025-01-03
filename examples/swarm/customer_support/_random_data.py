@@ -41,6 +41,9 @@ def generate_mock_data(num_samples):
 
 
 if __name__ == "__main__":
-    data = generate_mock_data(10)
-    with open("examples/swarm/simple/data.json", "w") as f:
-        json.dump(data, f, indent=None)
+    # data = generate_mock_data(10)
+    # with open("examples/swarm/customer_support/data/orders.json", "w") as f:
+    #     json.dump(data, f, indent=None)
+
+    with open("examples/swarm/customer_support/data/products.json", "w") as f:
+        json.dump(items_catalog, f, indent=None)

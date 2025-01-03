@@ -13,6 +13,7 @@ Checkout [continuous-eval repo](https://github.com/relari-ai/continuous-eval) an
 | ReAct Agent                | LlamaIndex    | continuous-eval | QA over Uber financial dataset using agents       |
 | Sentiment Classification   | LlamaIndex    | continuous-eval | Single label classification of sentence sentiment |
 | Simple RAG                 | Haystack      | continuous-eval | Simple QA chatbot over select Paul Graham essays  |
+| Customer Support           | OpenAI Swarm  | continuous-eval | Customer support agent using tools                |
 
 ## Installation
 
@@ -36,6 +37,24 @@ Some examples have just one script to execute (e.g. Haystack's Simple RAG), some
 - `pipeline.py` defines the application pipeline and the evaluation metrics / tests.
 - `app.py` contains the LLM application. Run this script to get the outputs (saved as `results.jsonl`)
 - `eval.py` runs the metrics / tests defined by `pipeline.py` (saved as `metrics_results.json` and `test_results.json`)
+
+### Running the examples
+
+To run the examples, you can use the following command:
+
+```bash
+poetry run python -m examples.<FRAMEWORK>.<APP_NAME>.app
+```
+
+for example `poetry run python3 -m examples.swarm.customer_support.eval`.
+
+To run the evaluation metrics and tests, use:
+
+```bash
+poetry run python3 -m examples.<FRAMEWORK>.<APP_NAME>.eval
+```
+
+### Additional notes
 
 Depending on the application, the source data for the application (documents and embeddings in Chroma vectorstore) and evaluation (golden dataset) is also provided. Note that for the evaluation golden dataset, there are always two files:
 

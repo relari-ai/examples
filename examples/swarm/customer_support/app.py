@@ -1,10 +1,11 @@
 import json
+from pathlib import Path
 
 from swarm import Swarm
 from tqdm import tqdm
-from pathlib import Path
-from examples.swarm.customer_support.pipeline import pipeline
+
 from examples.swarm.customer_support.agents import customer_service_supervisor_agent
+from examples.swarm.customer_support.pipeline import pipeline
 
 if __name__ == "__main__":
     output_dir = Path("output")
@@ -16,7 +17,13 @@ if __name__ == "__main__":
     for datum in tqdm(pipeline.dataset.data):
         response = client.run(
             agent=customer_service_supervisor_agent,
-            messages=[{"role": "user", "content": datum["question"]}],
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a customer service agent. You are responsible to help John Doe (email: john.doe@example.com) with their issue.",
+                },
+                {"role": "user", "content": datum["question"]},
+            ],
             debug=True,
         )
         log[datum["uid"]] = response.messages
